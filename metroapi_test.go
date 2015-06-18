@@ -3,14 +3,14 @@ package metroapi
 import "testing"
 
 func TestGetTimepointDepartures(t *testing.T) {
-	departures := GetTimepointDepartures(902, 3, "STVI")
+  departures := GetTimepointDepartures(902, 3, "STVI")
   if len(departures) == 0 {
     t.Errorf("GetTimepointDepartures returned 0 items")
   } else {
-		if departures[0].TimeOfDeparture == nil {
-			t.Errorf("GeneralDepartures could not parse time")
-		}
-	}
+    if departures[0].TimeOfDeparture == nil {
+      t.Errorf("GeneralDepartures could not parse time")
+    }
+  }
 }
 
 func TestGetProviders(t *testing.T) {
@@ -50,12 +50,12 @@ func TestGetDepartures(t *testing.T) {
 
 func TestGetVehicleLocations(t *testing.T) {
 
-	locations := GetVehicleLocations(5)
+  locations := GetVehicleLocations(5)
   if len(locations) == 0 {
     t.Errorf("GetVehicleLocations returned 0 items")
   } else {
-		if locations[0].LastCheckinTime == nil {
-			t.Errorf("VehicleLocations could not parse date")
-		}
-	}
+    if locations[0].LastCheckinTime == nil {
+      t.Errorf("VehicleLocations could not parse date")
+    }
+  }
 }

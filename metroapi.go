@@ -28,7 +28,7 @@ type GeneralDepartures struct {
   VehicleHeading    int
   VehicleLatitude   float32
   VehicleLongitude  float32
-	TimeOfDeparture   *time.Time
+  TimeOfDeparture   *time.Time
 }
 
 type Departures struct {
@@ -82,55 +82,55 @@ func retrieveData(url string) []byte {
 
 // convert a JavaScript date representation to a golang Time
 func convertJsDate(jsDate string) *time.Time {
-	pattern := regexp.MustCompile(`Date\(([0-9]{13})-[0-9]{4}`)
-	if matched := pattern.FindStringSubmatch(jsDate); len(matched) > 0 {
-		if unixTimestamp, err := strconv.Atoi(matched[1][:10]); err == nil {
-			converted := time.Unix(int64(unixTimestamp), 0)
-			return &converted
-		}
-	}
-	panic(errors.New("Invalid JavaScript date format string"))
+  pattern := regexp.MustCompile(`Date\(([0-9]{13})-[0-9]{4}`)
+  if matched := pattern.FindStringSubmatch(jsDate); len(matched) > 0 {
+    if unixTimestamp, err := strconv.Atoi(matched[1][:10]); err == nil {
+      converted := time.Unix(int64(unixTimestamp), 0)
+      return &converted
+    }
+  }
+  panic(errors.New("Invalid JavaScript date format string"))
 }
 
 // GeneralDepartures @implements json.Unmarshaler
 func (g *GeneralDepartures) UnmarshalJSON(b []byte) error {
 	
-	// Alias for GeneralDepartures that prevents infinite recursion in UnmarshallJSON
-	type generalDeparturesAlias GeneralDepartures
-	
+  // Alias for GeneralDepartures that prevents infinite recursion in UnmarshallJSON
+  type generalDeparturesAlias GeneralDepartures
+
   var err error = nil
-	newGeneralDepartures := generalDeparturesAlias{}
-	jsonMap := make(map[string]*json.RawMessage)
+  newGeneralDepartures := generalDeparturesAlias{}
+  jsonMap := make(map[string]*json.RawMessage)
 
-	err = json.Unmarshal(b, &newGeneralDepartures)
-	err = json.Unmarshal(b, &jsonMap)
+  err = json.Unmarshal(b, &newGeneralDepartures)
+  err = json.Unmarshal(b, &jsonMap)
 
-	datestr := jsonMap["DepartureTime"]
-	newGeneralDepartures.TimeOfDeparture = convertJsDate(string(*datestr))
+  datestr := jsonMap["DepartureTime"]
+  newGeneralDepartures.TimeOfDeparture = convertJsDate(string(*datestr))
 
-	*g = GeneralDepartures(newGeneralDepartures)
-	return err
+  *g = GeneralDepartures(newGeneralDepartures)
+  return err
 }
 
 
 // VehicleLocations @implements json.Unmarshaler
 func (v *VehicleLocations) UnmarshalJSON(b []byte) error {
-	
-	// Alias for GeneralDepartures that prevents infinite recursion in UnmarshallJSON
-	type vehicleLocationsAlias VehicleLocations
 
-	var err error = nil
-	newVehicleLocations := vehicleLocationsAlias{}
-	jsonMap := make(map[string]*json.RawMessage)
+  // Alias for GeneralDepartures that prevents infinite recursion in UnmarshallJSON
+  type vehicleLocationsAlias VehicleLocations
 
-	err = json.Unmarshal(b, &newVehicleLocations)
-	err = json.Unmarshal(b, &jsonMap)
+  var err error = nil
+  newVehicleLocations := vehicleLocationsAlias{}
+  jsonMap := make(map[string]*json.RawMessage)
 
-	datestr := jsonMap["LocationTime"]
-	newVehicleLocations.LastCheckinTime = convertJsDate(string(*datestr))
+  err = json.Unmarshal(b, &newVehicleLocations)
+  err = json.Unmarshal(b, &jsonMap)
 
-	*v = VehicleLocations(newVehicleLocations)
-	return err
+  datestr := jsonMap["LocationTime"]
+  newVehicleLocations.LastCheckinTime = convertJsDate(string(*datestr))
+
+  *v = VehicleLocations(newVehicleLocations)
+  return err
 }
 
 // Returns the scheduled departures for a selected route, direction and timepoint stop.
