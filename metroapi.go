@@ -5,9 +5,9 @@ import (
   "net/http"
   "io/ioutil"
   "strconv"
-	"time"
-	"regexp"
-	"errors"
+  "time"
+  "regexp"
+  "errors"
 )
 
 // Metro Transit API data structure types
